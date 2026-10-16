@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>JS手动下载案例2</title>
+</head>
+<body>
+<button onclick="jsDownload()">点击下载图片</button>
+<script>
+    async function jsDownload() {
+        try {
+            // 1. 请求后端接口
+            const res = await fetch("http://127.0.0.1:8080/download2");
+
+            // 2. 检查请求是否成功
+            if (!res.ok) {
+                throw new Error("请求失败，状态码：" + res.status);
+            }
+            // 3. 获取文件名
+            let fileName = res.headers.get("fileName");
+            console.log("拿到文件名：", fileName);
+            // 如果没拿到文件名，就使用默认值
+            if (!fileName) {
+                fileName = "xiaomao.png";
+            }
+            // 4. 获取文件二进制数据
+            const blob = await res.blob();
+            console.log("文件大小：", blob.size);
+            console.log("文件类型：", blob.type);
+            if (blob.size === 0) {
+                throw new Error("下载文件为空！");
+            }
+            // 5. 创建临时 URL
+            const href = window.URL.createObjectURL(blob);
+
+            // 6. 创建 a 标签
+            const downloadElement = document.createElement("a");
+            downloadElement.href = href;
+            downloadElement.download = fileName;
+
+            // 7. 添加到页面并触发下载
+            document.body.appendChild(downloadElement);
+            downloadElement.click();
+            downloadElement.remove();
+            // 8. 延迟释放临时 URL
+            setTimeout(() => {
+                window.URL.revokeObjectURL(href);
+            }, 1000);
+            console.log("下载请求已触发！");
+        } catch (error) {
+            console.error("下载失败：", error);
+        }
+    }
+</script>
+</body>
+</html>
