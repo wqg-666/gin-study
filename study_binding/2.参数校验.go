@@ -9,13 +9,13 @@ func main() {
 	r.POST("json", func(c *gin.Context) {
 		type User struct {
 			//如果有多个规则使用用逗号分割
-			//Name  string `json:"name" binding:"required,min=3,max=5"`
-			//Age   int    `json:"age"`
+			Name string `json:"name" `
+			Age  *int   `json:"age" binding:"required,min=0,max=5"`
 			//Pwd   string `json:"pwd" binding:"required"`
 			//RePwd string `json:"rePwd" binding:"eqfield=Pwd"`
 			//IP string `json:"ip" binding:"required,ip"`
 			//对数组IPList里的每个元素校验是不是为空，是不是ip地址，不能校验空数组
-			IPList []string `json:"iPList" binding:"dive,required,ip"`
+			//IPList []string `json:"iPList" binding:"dive,required,ip"`
 		}
 		var user User
 		err := c.ShouldBindJSON(&user)
@@ -27,10 +27,22 @@ func main() {
 		//传入空name,Key: 'User.Name' Error:Field validation for 'Name' failed on the 'required' tag
 		//不传name,Key: 'User.Name' Error:Field validation for 'Name' failed on the 'required' tag
 	})
-	r.Run()
+	r.Run(":8080")
 }
 
-//|/required：必填字段，如：binding:"required"
+//|/required：必填字段，如：binding:"required",参数为对应类型的零值会被拦截，不传参数也报错，可以使用指针进行区分
+//{
+//"name": "zhangsan",
+//"age": 0
+//}
+//{
+//"name": "zhangsan",
+//"age": 0
+//}
+//{
+//"name":"zhangsan"
+//}
+//Key: 'User.Age' Error:Field validation for 'Age' failed on the 'required' tag
 //min 最小长度，如：binding:"min=5"
 //max最大长度，如：binding:"max=10"
 //len 长度，如：binding:"len=6"

@@ -11,52 +11,51 @@ func main() {
 	//`err != nil` 只有两大类原因：
 	//1. 解析失败：拿到了参数的值，但是转不成结构体字段的类型（数据本身格式不对）
 	//2. 校验不通过：类型转换成功了，但是不满足你写的 `binding` 规则（数值合法，但业务规则不满足）
-	//查询参数,Params是放数据的位置
-	r.GET("", func(c *gin.Context) {
-		type User struct {
-			Name string `form:"name"`
-			Age  int    `form:"age"`
-		}
-		var user User
-		err := c.ShouldBindQuery(&user)
-		fmt.Println(user, err)
-		//{qq 123} <nil>
-		//{qq 0} strconv.ParseInt: parsing "\"111\"": invalid syntax
-
-	})
-	//路径参数,动态参数，Params是放数据的位置
-	r.GET("users/:id/:name", func(c *gin.Context) {
-		type User struct {
-			Name string `uri:"name"`
-			ID   int    `uri:"id"`
-		}
-		var user User
-		err := c.ShouldBindUri(&user)
-		fmt.Println(user, err)
-		//{qiqi 1} <nil>
-	})
+	//查询参数,Param-Query是放数据的位置,http://127.0.0.1:8080/?name=qq&age=123
+	//r.GET("", func(c *gin.Context) {
+	//	type User struct {
+	//		Name string `form:"name"`
+	//		Age  int    `form:"age"`
+	//	}
+	//	var user User
+	//	err := c.ShouldBindQuery(&user)
+	//	fmt.Println(user, err)
+	//	//{qq 123} <nil>
+	//	//{qq 0} strconv.ParseInt: parsing "\"111\"": invalid syntax
+	//})
+	//路径参数,动态参数，URL路径是放数据的位置,http://127.0.0.1:8080/users/123
+	//r.GET("users/:id/:name", func(c *gin.Context) {
+	//	type User struct {
+	//		Name string `uri:"name"`
+	//		ID   int    `uri:"id"`
+	//	}
+	//	var user User
+	//	err := c.ShouldBindUri(&user)
+	//	fmt.Println(user, err)
+	//	//{qiqi 1} <nil>
+	//})
 	//表单参数，Body请求体form-data是放参数的位置
-	r.POST("form", func(c *gin.Context) {
-		type User struct {
-			Name string `form:"name"`
-			Age  int    `form:"age"`
-		}
-		var user User
-		err := c.ShouldBind(&user)
-		fmt.Println(user, err)
-		//{琪琪 123} <nil>
-	})
+	//r.POST("form", func(c *gin.Context) {
+	//	type User struct {
+	//		Name string `form:"name"`
+	//		Age  int    `form:"age"`
+	//	}
+	//	var user User
+	//	err := c.ShouldBind(&user)
+	//	fmt.Println(user, err)
+	//	//{琪琪 123} <nil>
+	//})
 	//JSON参数，Body请求体json是放参数的位置
-	r.POST("json", func(c *gin.Context) {
-		type User struct {
-			Name string `json:"name"`
-			Age  int    `json:"age"`
-		}
-		var user User
-		err := c.ShouldBindJSON(&user)
-		fmt.Println(user, err)
-		//{琪琪 20} <nil>
-	})
+	//r.POST("json", func(c *gin.Context) {
+	//	type User struct {
+	//		Name string `json:"name"`
+	//		Age  int    `json:"age"`
+	//	}
+	//	var user User
+	//	err := c.ShouldBindJSON(&user)
+	//	fmt.Println(user, err)
+	//	//{琪琪 20} <nil>
+	//})
 	//Header参数,Headers是放参数的位置
 	r.POST("header", func(c *gin.Context) {
 		type User struct {
